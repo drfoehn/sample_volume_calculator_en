@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h2 {
+    text-align: center;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.tab {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.tab button {
+    background-color: #8ECAE6;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin: 5px;
+}
+
+.tab button:hover {
+    background-color: #219EBC;
+}
+
+.tabcontent {
+    display: none;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+#searchTabButton,
+.tablinks.active {
+    background-color: #d86201; 
+    color: white; 
+}
+
+.not-calculable {
+    background-color: #f89292;
+}
+
+.table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.btn {
+    width: 100%;
+}
+
+.result_div {
+    margin: 1em 0 1em 0;
+    padding: 1em;
+    background-color: #f3f3f3;
+}
