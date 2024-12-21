@@ -6,7 +6,11 @@ The Sample Volume Calculator is a web application designed to assist laboratory 
 ## Features
 - User-friendly interface for selecting laboratory tests.
 - Dynamic calculation of required sample volumes based on user input.
-- Ability to display results for different tube types.
+- Ability to display results for different tube types, including Heparin, Serum, EDTA, Urine, and CSF.
+- Consideration of hematocrit values for Heparin and Serum tubes while calculating required sample volumes.
+- Calculation of total sample volume and highest dead volume for each tube type.
+- Addition of a safety margin of 250µl for all tube types except for CSF analyses.
+- Warnings issued if the calculated volumes for Urine and EDTA exceed the selected tube sizes.
 - Integration with an Excel template for easy data input.
 
 ## Getting Started
@@ -46,6 +50,7 @@ The Sample Volume Calculator is a web application designed to assist laboratory 
 
 3. **View Results**
    - The application will display the required plasma volume, dead volume, and the total amount of whole blood needed for each selected test.
+   - The required volumes for Urine, EDTA, and CSF samples will be displayed, along with warnings if the calculated volumes exceed the selected tube sizes for Urine and EDTA.
 
 ## Contributing
 Contributions are welcome! If you have suggestions for improvements or new features, please open an issue or submit a pull request.
