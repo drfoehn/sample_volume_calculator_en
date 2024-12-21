@@ -1041,11 +1041,7 @@ function updateSelectedAnalytes(test, isChecked) {
             let cell = row.insertCell();
             cell.textContent = test[key];
         });
-
-        // Mark row red if the tube is not Heparin, EDTA, Serum, or Urine
-        if (!["Heparin-Plasma", "EDTA", "Serum", "Urine"].some(v => row.cells[1].textContent.includes(v))) {
-            row.classList.add("not-calculable");
-        }
+        // Remove the conditional background coloring
     } else {
         let rowToRemove = document.getElementById('row-' + test.Test);
         if (rowToRemove) {
@@ -1053,6 +1049,8 @@ function updateSelectedAnalytes(test, isChecked) {
         }
     }
 }
+
+
 
 function updateTubeSelections() {
     const tubeContainer = document.getElementById('tubeContainer');
@@ -1086,17 +1084,77 @@ function updateTubeSelections() {
     });
 }
 
+function calculateForTubeType(type, fillingVolume, rows) {
+    // Initialize variables for sample volume calculations
+    let totalSampleVolume = 0;
+    let highestDeadVolume = 0;
+
+    // Determine the tube type
+    let isHeparinOrSerum = type.toLowerCase().includes('heparin') || type.toLowerCase().includes('serum');
+    let isCoagulation = type.toLowerCase() === 'coagulation';
+    let isCSFAnalyses = type.toLowerCase() === 'csf analyses' || type.toLowerCase() === 'csf tube';
+
+    // Calculate total sample volume and find the highest dead volume
+    rows.forEach(row => {
+        if (row.cells[1].textContent === type) {
+            const sampleVolume = parseFloat(row.cells[3].textContent) || 0;
+            const deadVolume = parseFloat(row.cells[4].textContent) || 0;
+
+            totalSampleVolume += sampleVolume;
+            if (deadVolume > highestDeadVolume) {
+                highestDeadVolume = deadVolume;
+            }
+        }
+    });
+
+    // Initialize variables for volume calculations
+    let totalVolume;
+    let requiredSampleVolume;
+    let hctValue = parseFloat(document.getElementById('hct').value) / 100;
+
+    // Calculate required sample volume based on tube type
+    if (isHeparinOrSerum || isCoagulation) {
+        // For Heparin, Serum, and Coagulation: consider the hematocrit value
+        requiredSampleVolume = totalSampleVolume + highestDeadVolume;
+        totalVolume = requiredSampleVolume / (1 - hctValue);
+    } else {
+        // For all other tube types: don't consider hematocrit
+        requiredSampleVolume = totalSampleVolume + highestDeadVolume;
+        totalVolume = requiredSampleVolume;
+    }
+
+    // Add safety margin of 250µl, except for CSF analyses
+    let safetyMargin = isCSFAnalyses ? 0 : 250;
+    totalVolume += safetyMargin;
+
+    // Check if the total volume exceeds the filling volume (for non-CSF and non-Coagulation tubes)
+    let warning = !isCSFAnalyses && !isCoagulation && totalVolume > fillingVolume;
+
+    // Return an object with all calculated values and flags
+    return {
+        volume: totalVolume,
+        hctValue: hctValue * 100, 
+        deadVolume: highestDeadVolume, 
+        requiredSampleVolume: requiredSampleVolume,  
+        warning: warning,
+        isCoagulation: isCoagulation,
+        isCSFAnalyses: isCSFAnalyses,
+        safetyMargin: safetyMargin
+    };
+}
+
 function calculateSampleVolume() {
+    // Get the hematocrit value and selected rows
     const hctValue = document.getElementById('hct').value;
     const selectedRows = document.querySelectorAll('#selectedAnalytesTable tbody tr');
 
-    // Check if a hematocrit value has been entered
+    // Validate hematocrit value
     if (hctValue === '' || isNaN(hctValue) || hctValue < 0 || hctValue > 100) {
         alert('Please enter a valid hematocrit value between 0 and 100.');
         return;
     }
 
-    // Check if analyses have been selected
+    // Check if any tests are selected
     if (selectedRows.length === 0) {
         alert('Please select at least one analysis.');
         return;
@@ -1106,78 +1164,54 @@ function calculateSampleVolume() {
     const calculationResult = document.getElementById('calculationResult');
     calculationResult.innerHTML = '';
 
+    // Get unique tube types from selected rows
     let tubeTypes = new Set();
-
-    // Find unique tube types from selected rows
     selectedRows.forEach(row => {
-        if (!row.classList.contains("not-calculable")) {
-            tubeTypes.add(row.cells[1].textContent); 
-        }
+        tubeTypes.add(row.cells[1].textContent); 
     });
 
+    // Calculate and display results for each tube type
     tubeTypes.forEach(type => {
-        const fillingVolume = parseFloat(document.getElementById(`fillingVolume${type}`).value);
+        // Determine if it's a CSF or Coagulation tube (these don't need filling volume)
+        const isCSFOrCoagulation = type.toLowerCase() === 'csf analyses' || 
+                                   type.toLowerCase() === 'csf tube' || 
+                                   type.toLowerCase() === 'coagulation';
+        // Get filling volume for non-CSF and non-Coagulation tubes
+        const fillingVolume = isCSFOrCoagulation ? null : parseFloat(document.getElementById(`fillingVolume${type}`).value);
+        
+        // Calculate results for this tube type
         let result = calculateForTubeType(type, fillingVolume, selectedRows);
+        
+        // Create a div to display the results
         let resultDiv = document.createElement('div');
-        resultDiv.className = 'result_div'; // Added class here
-        resultDiv.innerHTML = `<h4>${type}</h4>
-                                <br>Required Plasma Volume: ${result.plasmaVolume.toFixed(2)} µl
-                                <br>Of which Dead Volume: ${result.highestTotalVolume.toFixed(2)} µl
-                                <br>Results in a hematocrit of ${result.hctValue.toFixed(2)}% 
-                                <h5>Required Amount of Whole Blood: ${result.volume.toFixed(2)} µl</h5>`;
+        resultDiv.className = 'result_div';
+        resultDiv.innerHTML = `
+            <h4>${type}</h4>
+            <br>Required Sample Volume: ${result.requiredSampleVolume.toFixed(2)} µl
+            <br>Of which Dead Volume: ${result.deadVolume.toFixed(2)} µl
+            ${result.safetyMargin > 0 ? `<br>Safety Margin: ${result.safetyMargin.toFixed(2)} µl` : ''}
+            ${(type.toLowerCase().includes('heparin') || type.toLowerCase().includes('serum') || result.isCoagulation) ? 
+              `<br>Considering a hematocrit of ${result.hctValue.toFixed(2)}%` : ''}
+            <h5>Total Required Amount of ${type}: ${result.volume.toFixed(2)} µl</h5>`;
+        
+        // Add warning if the volume exceeds the filling volume
         if (result.warning) {
-            resultDiv.innerHTML += `<p style="color: red;">WARNING: The required amount exceeds the maximum filling volume of the tube.</p>`;
+            resultDiv.innerHTML += `<p style="color: red;">WARNING: The required amount exceeds the maximum filling volume of the tube (${fillingVolume} µl).</p>`;
         }
+        
+        // Add special instruction for Coagulation tubes
+        if (result.isCoagulation) {
+            resultDiv.innerHTML += `<p style="color: red;">Please use the next biggest citrate-tube size to fit the amount of whole blood calculated and fill it to the max filling volume to ensure a correct blood:citrate-ratio</p>`;
+        }
+        
+        // Add the result div to the page
         calculationResult.appendChild(resultDiv);
     });
 }
 
-function calculateForTubeType(type, fillingVolume, rows) {
-    let totalSampleVolume = 0;
-    let highestTotalVolume = 0;
-    let isUrineSample = false;
 
-    rows.forEach(row => {
-        if (row.cells[1].textContent === type) {
-            const sampleVolume = parseFloat(row.cells[3].textContent) || 0;
-            const totalVolume = parseFloat(row.cells[4].textContent) || 0;
 
-            // Only update highestTotalVolume if current value is higher
-            if (totalVolume > highestTotalVolume) {
-                highestTotalVolume = totalVolume;  
-            }
 
-            totalSampleVolume += sampleVolume;
-
-            if (row.cells[1].textContent.toLowerCase().includes("urine")) {
-                isUrineSample = true;
-            }
-        }
-    });
-
-    let totalVolume;
-    let plasmaVolume;
-    let hctValue;
-    if (isUrineSample) {
-        // For urine samples: total volume is the sum of sample volume and highest total volume
-        totalVolume = totalSampleVolume + highestTotalVolume;
-    } else {
-        // For blood samples: consider the hematocrit value
-        hctValue = parseFloat(document.getElementById('hct').value);
-        const hctFraction = hctValue / 100;
-        plasmaVolume = totalSampleVolume + highestTotalVolume;
-        totalVolume = plasmaVolume / (1 - hctFraction);
-    }
-
-    let warning = totalVolume > fillingVolume;
-
-    return { volume: totalVolume,
-             hctValue: hctValue, 
-             highestTotalVolume: highestTotalVolume, 
-             plasmaVolume: plasmaVolume,  
-             warning: warning, 
-             noCalculation: false };
-}
 
 function openTab(evt, groupName) {
     var i, tabcontent, tablinks;
