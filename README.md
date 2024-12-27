@@ -58,5 +58,11 @@ Contributions are welcome! If you have suggestions for improvements or new featu
 ## License
 This project is licensed under the GNU GENERAL PUBLIC LICENSE Version 3 - see the [LICENSE](LICENSE) file for details.
 
+## Disclaimer:
+The use of the sample volume calculator application described in this manuscript is at the user's own risk. The authors, contributors, and affiliated institutions cannot be held liable for any errors, omissions, or consequences arising from the use of this tool. The application is provided "as is" without any warranties, express or implied.
+Users are responsible for verifying the accuracy of the information provided by the application and should always rely on their professional judgment and institutional guidelines when making clinical decisions. The tool is intended to serve as a guide and should not replace established medical protocols or override the expertise of healthcare professionals.
+It is the responsibility of each institution to validate the application's calculations and ensure compliance with their own laboratory standards and practices before implementation. Users should be aware that laboratory requirements and test specifications may vary between institutions and over time.
+By using this application, you acknowledge that you have read and understood this disclaimer and agree to use the tool at your own discretion and risk.
+
 ## Acknowledgments
 - Thanks to all contributors and users for their support and feedback.
