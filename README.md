@@ -69,5 +69,6 @@ It is the responsibility of each institution to validate the application's calcu
 
 By using this application, you acknowledge that you have read and understood this disclaimer and agree to use the tool at your own discretion and risk.
 
+An online version for testing can be found at https://research.cadamu.ro/sample_volume_calculator 
 ## Acknowledgments
 - Thanks to all contributors and users for their support and feedback.
