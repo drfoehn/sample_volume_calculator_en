@@ -1,5 +1,10 @@
 # Sample Volume Calculator
 
+*The publication attached to this project can be found at: 
+
+Cadamuro, Janne, Wald, Martin, Mrazek, Cornelia, Giesriegl, Florian, Mink, Sylvia and Weghuber, Daniel. "Determining the minimum blood volume required for laboratory testing in newborns" Clinical Chemistry and Laboratory Medicine (CCLM), 2025. https://doi.org/10.1515/cclm-2025-0243*
+
+
 ## Overview
 The Sample Volume Calculator is a web application designed to assist laboratory professionals in calculating the required sample volumes for various laboratory tests. The application allows users to input test data, including hematocrit values, and provides calculated results based on the input data.
 
