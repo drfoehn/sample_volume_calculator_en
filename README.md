@@ -1,8 +1,8 @@
 # Sample Volume Calculator
 
-** The publication attached to this project can be found at: 
+The publication attached to this project can be found at: 
 
-Cadamuro, Janne, Wald, Martin, Mrazek, Cornelia, Giesriegl, Florian, Mink, Sylvia and Weghuber, Daniel. "Determining the minimum blood volume required for laboratory testing in newborns" Clinical Chemistry and Laboratory Medicine (CCLM), 2025. https://doi.org/10.1515/cclm-2025-0243 **
+Cadamuro, Janne, Wald, Martin, Mrazek, Cornelia, Giesriegl, Florian, Mink, Sylvia and Weghuber, Daniel. "Determining the minimum blood volume required for laboratory testing in newborns" Clinical Chemistry and Laboratory Medicine (CCLM), 2025. https://doi.org/10.1515/cclm-2025-0243
 
 
 ## Overview
