@@ -35,10 +35,10 @@ The Sample Volume Calculator is a web application designed to assist laboratory 
    - Open `sample_volume_calculator.html` in your web browser to run the application locally.
 
 3. **Download the Excel Template**
-   - A template for the Excel file used for initial data input can be found at [Excel to JSON Converter](https://example.com/excel_to_json_converter). Download this file and fill it with your laboratory test data.
+   - A template for the Excel file used for initial data input can be found at [Excel to JSON Converter](https://research.example.com/excel_to_json_converter). Download this file and fill it with your laboratory test data.
 
 4. **Convert Excel to JSON**
-   - After filling in the Excel template, you can convert it into JSON format using another one of my applications available at [Excel to JSON Converter](https://example.com/excel_to_json_converter).
+   - After filling in the Excel template, you can convert it into JSON format using another one of my applications available at [Excel to JSON Converter](https://research.example.com/excel_to_json_converter).
 
 ### Using the Web App
 - Navigate to the deployed web app URL (if hosted) to access the Sample Volume Calculator.
@@ -74,6 +74,6 @@ It is the responsibility of each institution to validate the application's calcu
 
 By using this application, you acknowledge that you have read and understood this disclaimer and agree to use the tool at your own discretion and risk.
 
-An online version for testing can be found at https://example.com/sample_volume_calculator 
+An online version for testing can be found at https://research.example.com/sample_volume_calculator 
 ## Acknowledgments
 - Thanks to all contributors and users for their support and feedback.
